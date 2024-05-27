@@ -1,4 +1,4 @@
-import { RedisModule } from '@nestjs-modules/ioredis';
+import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
@@ -7,7 +7,7 @@ import * as Joi from 'joi';
   imports: [
     ConfigModule.forRoot({
       envFilePath: [
-        process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : `.env.local`,
+        process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : `.env`,
       ],
       validationSchema: Joi.object({
         REDIS_HOST: Joi.string().required(),
@@ -16,13 +16,13 @@ import * as Joi from 'joi';
     }),
     RedisModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         config: {
-          host: configService.get(`REDIS_HOST`),
-          port: configService.get(`REDIS_PORT`),
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
         },
       }),
+      inject: [ConfigService],
     }),
   ],
 })

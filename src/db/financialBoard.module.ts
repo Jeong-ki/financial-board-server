@@ -9,12 +9,12 @@ export const FINCIAL_BOARD_DB_CONN_NAME = 'FINCIAL_BOARD_DB_CONN_NAME';
   imports: [
     ConfigModule.forRoot({
       envFilePath: [
-        process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : `.env.local`,
+        process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : `.env`,
       ],
       validationSchema: Joi.object({
         FINCIAL_BOARD_DBMS_TYPE: Joi.string().required(),
         FINCIAL_BOARD_DBMS_HOST: Joi.string().required(),
-        FINCIAL_BOARD_DBMS_PORT: Joi.string().required(),
+        FINCIAL_BOARD_DBMS_PORT: Joi.number().integer().required(),
         FINCIAL_BOARD_DBMS_USERNAME: Joi.string().required(),
         FINCIAL_BOARD_DBMS_PASSWORD: Joi.string().required(),
         FINCIAL_BOARD_DBMS_DATABASE: Joi.string().required(),

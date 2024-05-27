@@ -13,7 +13,7 @@ const generateEndPoint = (rootPath: string, postPath?: string) => {
   imports: [
     ConfigModule.forRoot({
       envFilePath: [
-        process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : `.env.local`,
+        process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : `.env`,
       ],
       validationSchema: Joi.object({
         GRAPHQL_API_PORT: Joi.number().integer().required(),

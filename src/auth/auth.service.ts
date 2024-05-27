@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
+import { InjectRedis } from '@nestjs-modules/ioredis';
 import * as moment from 'moment';
 import { Request } from 'express';
 import * as _ from 'lodash';
@@ -23,7 +23,7 @@ export class AuthService {
 
   constructor(
     @InjectRedis()
-    private readonly redis: Redis,
+    private readonly redis,
     @Inject(AuthService.PROPS_PROPERTY)
     private props: AuthServiceProps,
 
@@ -253,7 +253,7 @@ export class AuthService {
     }
   }
 
-  async compareUserAndSessionPayload(user: User) {
+  async compareUserAndSessionPayload(user) {
     const userSessionPayload = await this.getUserSessionPayload(user.userId);
 
     // Check company info
