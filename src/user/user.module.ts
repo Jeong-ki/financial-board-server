@@ -5,9 +5,14 @@ import { UserMapper } from './user.mapper';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
+import { UserEntity } from 'src/db/entities/user.entity';
+import { FINCIAL_BOARD_DB_CONN_NAME } from 'src/db/financialBoard.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(), forwardRef(() => AuthModule)],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity], FINCIAL_BOARD_DB_CONN_NAME),
+    forwardRef(() => AuthModule),
+  ],
   providers: [UserResolver, UserService, UserMapper],
   exports: [UserService, UserMapper],
 })

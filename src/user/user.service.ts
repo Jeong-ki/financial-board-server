@@ -11,8 +11,8 @@ import {
   UpdateUserInput,
 } from './user.dto';
 import { UserMapper } from './user.mapper';
-import { UserEntity } from 'src/db/entites/user.entity';
 import { FINCIAL_BOARD_DB_CONN_NAME } from 'src/db/financialBoard.module';
+import { UserEntity } from 'src/db/entities/user.entity';
 
 const PW_ENCRYPT_ITERATION = 10000;
 const PW_ENCRYPT_KEY_LENGTH = 128;
