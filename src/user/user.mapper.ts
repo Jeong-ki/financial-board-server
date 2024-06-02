@@ -4,7 +4,6 @@ import { UserEntity } from 'src/db/entities/user.entity';
 
 @Injectable()
 export class UserMapper {
-  constructor() {}
   convertEntityToUser(userEntity: UserEntity) {
     let user: User = undefined;
     if (userEntity && userEntity.userId) {

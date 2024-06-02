@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService, AuthServiceProps } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { AuthStrategy, AuthStrategyProps } from './auth.strategy';
+import { AuthResolver } from './auth.resolver';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -27,9 +29,11 @@ import { AuthStrategy, AuthStrategyProps } from './auth.strategy';
       }),
       inject: [ConfigService],
     }),
+    forwardRef(() => UserModule),
   ],
   providers: [
     AuthService,
+    AuthResolver,
     {
       provide: AuthService.PROPS_PROPERTY,
       inject: [ConfigService],

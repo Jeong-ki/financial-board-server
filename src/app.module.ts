@@ -6,6 +6,7 @@ import { GraphqlModule } from './graphql/graphql.module';
 import { fincialBoardModule } from './db/financialBoard.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
     fincialBoardModule,
     UserModule,
     AuthModule,
+    BoardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

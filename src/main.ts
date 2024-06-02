@@ -11,6 +11,7 @@ async function bootstrap() {
   // }
   // app.useGlobalPipes(new ValidationPipe());
   const port = Number.parseInt(configService.get(`REST_API_PORT`));
+  console.log(port);
 
   await app.listen(port);
 }
