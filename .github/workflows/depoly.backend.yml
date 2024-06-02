@@ -32,8 +32,6 @@ jobs:
             yarn
             yarn build
 
-            # TypeORM 마이그레이션 실행
-            yarn typeorm:run-master-data-migration:default
 
             yarn pm2 kill
             yarn pm2 start dist/main.js --name "backend-server"
