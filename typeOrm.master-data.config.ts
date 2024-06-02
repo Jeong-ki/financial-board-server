@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 
 config({
-  path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV || 'local'}`),
+  path: path.resolve(process.cwd(), '.env'),
 });
 
 const {
