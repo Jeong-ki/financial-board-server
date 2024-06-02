@@ -1,16 +1,14 @@
 name: GITHUB Action
-## main 브랜치로 push될떄 아래 workflow 실행
+
 on:
   push:
     branches:
       - main
-## main 브랜치로 push될떄 아래 workflow 실행
 
 jobs:
   depoly:
     runs-on: ubuntu-latest
-    ## step: 특정 작업을 수행하는 가장 작은 단위
-    #JOB은 여런 STEP으로 구성되어 있음
+
     steps:
       - name: depoly
         uses: appleboy/ssh-action@v1.0.3
@@ -23,11 +21,17 @@ jobs:
             sudo su
             git config --global --add safe.directory /var/back-end/financial-board-server
             cd /var/back-end/financial-board-server
-            sudo chown -R $USER:$USER .
-            sudo chmod -R 755 .
+
+            # 파일 권한 확인 및 수정
+            sudo chown -R $USER:$USER var/back-end/financial-board-server
+            sudo chmod -R 755 var/back-end/financial-board-server
+
             git pull
             yarn
             yarn build
+
+            # TypeORM 마이그레이션 실행
             yarn typeorm:run-master-data-migration:default
+
             pm2 kill
             pm2 start dist/main.js --name "backend-server"
