@@ -7,15 +7,12 @@ on:
 ## main 브랜치로 push될떄 아래 workflow 실행
 
 jobs:
-  ##job 식별하기 위한 id
-  deploy-on-test:
-    ## ubuntu 환경:최신버전
+  depoly:
     runs-on: ubuntu-latest
     ## step: 특정 작업을 수행하는 가장 작은 단위
     #JOB은 여런 STEP으로 구성되어 있음
     steps:
-      ## run은 리눅스 명렁 코드
-      - name: 테스트
+      - name: depoly
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }} # EC2의 주소
