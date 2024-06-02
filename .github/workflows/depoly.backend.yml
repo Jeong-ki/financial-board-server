@@ -6,11 +6,11 @@ on:
       - main
 
 jobs:
-  deploy-on-test:
+  depoly:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 테스트
+      - name: depoly
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }} # EC2의 주소
