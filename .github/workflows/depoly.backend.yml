@@ -17,6 +17,7 @@ jobs:
           username: ${{ secrets.USERNAME }} # EC2 접속 username
           key: ${{ secrets.PRIVATE_KEY }} # EC2의 Key 파일의 내부 텍스트
           script: |
+            sudo su
             cd /var/back-end/financial-board-server  # 여기 경로는 자신의 EC2에 맞는 경로로 재작성하기
             git pull 
             yarn 
