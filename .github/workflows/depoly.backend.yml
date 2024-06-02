@@ -22,9 +22,11 @@ jobs:
           script: |
             sudo su
             git config --global --add safe.directory /var/back-end/financial-board-server
-            cd /var/back-end/financial-board-server  # 여기 경로는 자신의 EC2에 맞는 경로로 재작성하기
-            git pull 
-            yarn 
+            cd /var/back-end/financial-board-server
+            sudo chown -R $USER:$USER .
+            sudo chmod -R 755 .
+            git pull
+            yarn
             yarn build
             yarn typeorm:run-master-data-migration:default
             pm2 kill
