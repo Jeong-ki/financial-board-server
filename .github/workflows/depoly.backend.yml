@@ -25,7 +25,7 @@ jobs:
             # 파일 권한 확인 및 수정
             sudo chown -R $USER:$USER /var/back-end/financial-board-server
             sudo chmod -R 755 /var/back-end/financial-board-server
-
+            git stash
             git pull
             yarn
             yarn build
