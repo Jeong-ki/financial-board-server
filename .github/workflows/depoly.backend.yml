@@ -18,9 +18,8 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }} # EC2의 Key 파일의 내부 텍스트
           script_stop: true # 아래 script 중 실패하는 명령이 하나라도 있으면 실패로 처리
           script: |
-            sudo su
             git config --global --add safe.directory /var/back-end/financial-board-server
-            cd /var/back-end/financial-board-server
+            sudo cd /var/back-end/financial-board-server
 
             # 파일 권한 확인 및 수정
             sudo chown -R $USER:$USER /var/back-end/financial-board-server
