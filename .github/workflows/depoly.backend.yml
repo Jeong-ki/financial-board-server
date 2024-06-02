@@ -16,7 +16,6 @@ jobs:
           host: ${{ secrets.HOST }} # EC2의 주소
           username: ${{ secrets.USERNAME }} # EC2 접속 username
           key: ${{ secrets.PRIVATE_KEY }} # EC2의 Key 파일의 내부 텍스트
-          script_stop: true # 아래 script 중 실패하는 명령이 하나라도 있으면 실패로 처리
           script: |
             cd /var/back-end/financial-board-server  # 여기 경로는 자신의 EC2에 맞는 경로로 재작성하기
             git pull 
