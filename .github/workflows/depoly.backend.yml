@@ -23,8 +23,8 @@ jobs:
             cd /var/back-end/financial-board-server
 
             # 파일 권한 확인 및 수정
-            sudo chown -R $USER:$USER var/back-end/financial-board-server
-            sudo chmod -R 755 var/back-end/financial-board-server
+            sudo chown -R $USER:$USER /var/back-end/financial-board-server
+            sudo chmod -R 755 /var/back-end/financial-board-server
 
             git pull
             yarn
