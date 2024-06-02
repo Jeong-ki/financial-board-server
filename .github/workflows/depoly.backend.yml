@@ -25,12 +25,10 @@ jobs:
             # 파일 권한 확인 및 수정
             sudo chown -R $USER:$USER /var/back-end/financial-board-server
             sudo chmod -R 755 /var/back-end/financial-board-server
+            git fetch
             git pull
             yarn
             yarn build
-
-            # TypeORM 마이그레이션 실행
-            yarn typeorm:run-master-data-migration:default
 
             pm2 kill
             pm2 start dist/main.js --name "backend-server"
