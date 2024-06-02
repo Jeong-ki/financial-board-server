@@ -34,4 +34,4 @@ jobs:
 
 
             yarn pm2 kill
-            yarn pm2 start dist/main.js --name "backend-server"
+            yarn pm2 start ./dist/main.js --name "backend-server"
