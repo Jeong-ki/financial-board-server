@@ -15,7 +15,7 @@ import { BoardModule } from './board/board.module';
     fincialBoardModule,
     UserModule,
     AuthModule,
-    BoardModule,
+    // BoardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
