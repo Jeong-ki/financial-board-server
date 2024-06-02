@@ -22,8 +22,6 @@ jobs:
           script: |
             sudo su
             git config --global --add safe.directory /var/back-end/financial-board-server
-            chown -R ubuntu:ubuntu /var/back-end/financial-board-server
-            chmod -R 755 /var/back-end/financial-board-server
             cd /var/back-end/financial-board-server  # 여기 경로는 자신의 EC2에 맞는 경로로 재작성하기
             git pull 
             yarn 
