@@ -120,4 +120,32 @@ export class UserResolver {
       );
     }
   }
+
+  @Mutation(() => User, {
+    nullable: false,
+    name: 'UpdateUserAcivation',
+  })
+  async updateUserActivate(
+    @Args('data', { type: () => UpdateUserBySelfInput })
+    updateUserBySelfInput: UpdateUserBySelfInput,
+  ) {
+    try {
+      const updateUserInput: UpdateUserInput = {
+        id: updateUserBySelfInput.id,
+        name: updateUserBySelfInput.name,
+      };
+      const updatedUser = await this.userService.updateUser(updateUserInput);
+
+      return updatedUser;
+    } catch (e) {
+      this.logger.error(
+        `id: ${JSON.stringify(updateUserBySelfInput)}`,
+        (e as Error).stack,
+      );
+      throw new InternalServerErrorException(
+        'Error on updating user by self.',
+        (e as Error).message,
+      );
+    }
+  }
 }

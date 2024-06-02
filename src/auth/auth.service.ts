@@ -1,10 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
+import { InjectRedis } from '@nestjs-modules/ioredis';
 import * as moment from 'moment';
 import { Request } from 'express';
 import * as _ from 'lodash';
 import * as crypto from 'crypto';
+import { User } from 'src/user/user.dto';
+import { JWTPayload, SessionPayload, UserSessionInfo } from './auth.dto';
 
 const PW_ENCRYPT_ITERATION = 10000;
 const PW_ENCRYPT_KEY_LENGTH = 128;
@@ -23,16 +25,12 @@ export class AuthService {
 
   constructor(
     @InjectRedis()
-    private readonly redis: Redis,
+    private readonly redis,
     @Inject(AuthService.PROPS_PROPERTY)
     private props: AuthServiceProps,
 
-    private jwtService: JwtService, // @Inject(INTER_MODULE_PUBSUB_NAME) private pubsub: PubSub
-  ) {
-    // this.pubsub.subscribe(AUTH_INFO_CHANGE_TOPIC, (user: User) => {
-    //   this.updateUserToken(user);
-    // });
-  }
+    private jwtService: JwtService,
+  ) {}
 
   async checkUserPassword(user, password: string): Promise<boolean> {
     const salt = user.salt;
@@ -54,13 +52,15 @@ export class AuthService {
     }
   }
 
-  async createUserSession(user, clientIPAddr: string | string[]) {
+  async createUserSession(user: User): Promise<UserSessionInfo> {
     const jwtPayload = {
       id: user.id,
       userId: user.userId,
       name: user.name,
     };
+
     const token = this.jwtService.sign(jwtPayload);
+    console.log(token);
 
     const sessionExpiredInSecond = this.props.sessionExpiredInMinute * 60;
     const expiredDate = moment(new Date())
@@ -68,24 +68,12 @@ export class AuthService {
       .toDate();
     const sessionPayload = {
       token: token,
-      user: user,
-      clientIPAddr: clientIPAddr,
-      expiredDate: expiredDate,
+      userId: user.userId,
+      sessionExpiredDate: expiredDate,
     };
 
     await this.setUserSessionPayload(sessionPayload);
 
-    // return {
-    //   token: token,
-    //   roles: user.roles,
-    //   sessionExpiredDate: expiredDate,
-    //   autoRefreshSession: user.autoRefreshSession,
-    //   company: user.company,
-    //   authority:
-    //     Object.values(UserAuthorityEnum).find((userAuthority) => {
-    //       return user.authority === userAuthority;
-    //     }) || UserAuthorityEnum.USER,
-    // };
     return sessionPayload;
   }
 
@@ -109,7 +97,6 @@ export class AuthService {
     const newSessionPayload = {
       token: newToken,
       user: user,
-      clientIPAddr: oldUserSessionPayload.clientIPAddr,
       expiredDate: oldUserSessionPayload.expiredDate,
     };
 
@@ -118,32 +105,30 @@ export class AuthService {
     return newSessionPayload;
   }
 
-  // async updateUserToken(user: User) {
-  //   const oldUserSessionPayload = await this.getUserSessionPayload(user.userId);
-  //   if (!oldUserSessionPayload) return;
+  async updateUserToken(user: User) {
+    const oldUserSessionPayload = await this.getUserSessionPayload(user.userId);
+    if (!oldUserSessionPayload) return;
 
-  //   const jwtPayload: JWTPayload = {
-  //     id: user.id,
-  //     userId: user.userId,
-  //     name: user.name,
-  //   };
-  //   const newToken = this.jwtService.sign(jwtPayload);
+    const jwtPayload: JWTPayload = {
+      id: user.id,
+      userId: user.userId,
+      name: user.name,
+    };
+    const newToken = this.jwtService.sign(jwtPayload);
 
-  //   const newSessionPayload: SessionPayload = {
-  //     token: newToken,
-  //     user: user,
-  //     clientIPAddr: oldUserSessionPayload.clientIPAddr,
-  //     expiredDate: oldUserSessionPayload.expiredDate,
-  //   };
+    const newSessionPayload: SessionPayload = {
+      token: newToken,
+      user: user,
+      expiredDate: oldUserSessionPayload.expiredDate,
+    };
 
-  //   await this.setUserSessionPayload(newSessionPayload);
-  //   const userTokenUpdateInfo: UpdatedUserTokenInfo = {
-  //     userId: user.userId,
-  //     oldToken: oldUserSessionPayload.token,
-  //     newToken: newSessionPayload.token,
-  //   };
-  //   this.pubsub.publish(USER_TOKEN_UPDATE_TOPIC, userTokenUpdateInfo);
-  // }
+    await this.setUserSessionPayload(newSessionPayload);
+    const userTokenUpdateInfo = {
+      userId: user.userId,
+      oldToken: oldUserSessionPayload.token,
+      newToken: newSessionPayload.token,
+    };
+  }
 
   async findUserSessionInfo(userId: string) {
     const userSession = await this.getUserSessionPayload(userId);
@@ -160,8 +145,6 @@ export class AuthService {
         roles: userSession.user.roles,
         sessionExpiredDate: userSession.expiredDate,
         autoRefreshSession: userSession.user.autoRefreshSession,
-        authority: userSession.user.authority,
-        company: userSession.user.company,
       };
     }
   }
@@ -176,17 +159,6 @@ export class AuthService {
       return token;
     }
   }
-
-  // async isValidReqToken(req: Request, userSessionInfo: UserSessionInfo) {
-  //   const reqToken = this.getTokenFromReqHeader(req);
-  //   if (reqToken === userSessionInfo.token) {
-  //     return true;
-  //   } else {
-  //     throw new Error(
-  //       `Request token (${reqToken}) and session token (${userSessionInfo.token}) is not matched. (Userid: ${userSessionInfo.userId})`
-  //     );
-  //   }
-  // }
 
   // async isValidReqToken(req: Request, userId: string) {
   //   const reqToken = this.getTokenFromReqHeader(req);
@@ -253,7 +225,7 @@ export class AuthService {
     }
   }
 
-  async compareUserAndSessionPayload(user: User) {
+  async compareUserAndSessionPayload(user) {
     const userSessionPayload = await this.getUserSessionPayload(user.userId);
 
     // Check company info
@@ -281,7 +253,7 @@ export class AuthService {
     }
   }
 
-  async refreshSessionExpiration(user, clientIPAddr) {
+  async refreshSessionExpiration(user) {
     const oldSession = await this.getUserSessionPayload(user.userId);
     if (!oldSession) {
       throw new Error(
@@ -289,7 +261,7 @@ export class AuthService {
       );
     }
 
-    return await this.createUserSession(user, clientIPAddr);
+    return await this.createUserSession(user);
   }
 
   decodeTokenStr(tokenStr: string) {
@@ -320,12 +292,11 @@ export class AuthService {
   }
 
   private async setUserSessionPayload(sessionPayload) {
-    // Overwrite session payload to the key
     await this.redis.set(
-      `${this.props.sessionKeyPrefix}${sessionPayload.user.userId}`,
+      `${this.props.sessionKeyPrefix}${sessionPayload.userId}`,
       JSON.stringify(sessionPayload),
       'EX',
-      moment(sessionPayload.expiredDate).diff(Date.now(), 'seconds'),
+      3600,
     );
   }
 

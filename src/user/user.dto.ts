@@ -28,7 +28,6 @@ export class SignUpInput {
   @Field() @MinLength(USER_ID_MIN_LENGTH) userId: string;
   @Field() @MinLength(PW_MIN_LENGTH) password: string;
   @Field() name: string;
-  @Field(() => ID, { nullable: false }) companyId: string;
 }
 
 @ObjectType()

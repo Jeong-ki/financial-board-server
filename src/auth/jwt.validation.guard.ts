@@ -1,30 +1,36 @@
-import { Injectable, ExecutionContext, ContextType } from '@nestjs/common';
-import { GqlContextType, GqlExecutionContext } from '@nestjs/graphql';
+import { Injectable, ExecutionContext } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
 
 @Injectable()
 export class JwtValidationGuard extends AuthGuard('jwt') {
   getRequest(context: ExecutionContext) {
-    const contextType: ContextType | GqlContextType = context.getType();
-    let request: Request = null;
+    const contextType = context.getType();
+    let request;
+
     switch (contextType) {
       case 'http':
-        request = context.getArgByIndex(0);
+        request = context.switchToHttp().getRequest();
         break;
-      case 'graphql':
-        {
-          const gqlCtx = GqlExecutionContext.create(context);
-          request = gqlCtx.getContext().req;
-        }
+      case 'rpc':
+        request = context.switchToRpc().getData();
         break;
       case 'ws':
-        {
-          request = context.switchToWs().getClient().request;
-          const auth = context.switchToWs().getClient().handshake.auth;
-          request.headers.authorization = auth.authorization;
-        }
+        const socket = context.switchToWs().getClient();
+        request = socket.handshake;
+        const auth = socket.handshake.auth;
+        request.headers = {
+          ...request.headers,
+          authorization: auth.authorization,
+        };
         break;
+      default:
+        if (contextType === 'graphql') {
+          const gqlContext = GqlExecutionContext.create(context);
+          request = gqlContext.getContext().req;
+        } else {
+          throw new Error(`Unsupported context type: ${contextType}`);
+        }
     }
 
     return request;

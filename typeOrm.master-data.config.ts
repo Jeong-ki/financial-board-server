@@ -16,16 +16,17 @@ const {
 
 const dataSource = new DataSource({
   name: 'default',
-  type: 'mariadb',
+  type: 'postgres',
   host: FINCIAL_BOARD_DBMS_HOST,
   port: parseInt(FINCIAL_BOARD_DBMS_PORT),
   username: FINCIAL_BOARD_DBMS_USERNAME,
   password: FINCIAL_BOARD_DBMS_PASSWORD,
   database: FINCIAL_BOARD_DBMS_DATABASE,
+  schema: 'public',
   synchronize: false,
   logging: false,
   entities: ['./src/db/entities/*.entity.{js,ts}'],
-  migrations: ['migrations/*.{js,ts}'],
+  migrations: ['./migrations/*.{js,ts}'],
 });
 
 export default dataSource;

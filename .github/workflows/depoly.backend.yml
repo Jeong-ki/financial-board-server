@@ -1,0 +1,14 @@
+name: GITHUB Action
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-on-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 테스트
+        run: echo "Test Complete"

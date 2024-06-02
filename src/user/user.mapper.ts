@@ -1,10 +1,9 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { UserEntity } from 'src/db/entites/user.entity';
 import { User } from './user.dto';
+import { UserEntity } from 'src/db/entities/user.entity';
 
 @Injectable()
 export class UserMapper {
-  constructor() {}
   convertEntityToUser(userEntity: UserEntity) {
     let user: User = undefined;
     if (userEntity && userEntity.userId) {
