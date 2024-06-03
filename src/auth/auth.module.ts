@@ -6,6 +6,7 @@ import * as Joi from 'joi';
 import { AuthStrategy, AuthStrategyProps } from './auth.strategy';
 import { AuthResolver } from './auth.resolver';
 import { UserModule } from 'src/user/user.module';
+import { JwtValidationGuard } from './jwt.validation.guard';
 
 @Module({
   imports: [
@@ -34,6 +35,8 @@ import { UserModule } from 'src/user/user.module';
   providers: [
     AuthService,
     AuthResolver,
+    JwtValidationGuard,
+    AuthStrategy,
     {
       provide: AuthService.PROPS_PROPERTY,
       inject: [ConfigService],
