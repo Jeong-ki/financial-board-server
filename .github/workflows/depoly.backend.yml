@@ -21,9 +21,6 @@ jobs:
             git config --global --add safe.directory /var/back-end/financial-board-server
             cd /var/back-end/financial-board-server
 
-            # 파일 권한 확인 및 수정
-            sudo chown -R $USER:$USER /var/back-end/financial-board-server
-            sudo chmod -R 755 /var/back-end/financial-board-server
 
             # 로컬 변경 사항 스태시
             git stash
