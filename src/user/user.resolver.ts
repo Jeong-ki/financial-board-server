@@ -1,3 +1,4 @@
+import { number } from 'joi';
 import {
   Inject,
   InternalServerErrorException,
@@ -35,7 +36,7 @@ export class UserResolver {
     }
   }
 
-  @UseGuards(JwtValidationGuard)
+  // @UseGuards(JwtValidationGuard)
   @Query(() => [User], {
     nullable: false,
     name: 'FindUsers',
@@ -45,7 +46,7 @@ export class UserResolver {
   ) {
     try {
       const users = await this.userService.findUsers(filter);
-
+      console.log(users);
       return users;
     } catch (e) {
       this.logger.error(
@@ -126,13 +127,14 @@ export class UserResolver {
     name: 'UpdateUserAcivation',
   })
   async updateUserActivate(
-    @Args('data', { type: () => UpdateUserBySelfInput })
-    updateUserBySelfInput: UpdateUserBySelfInput,
+    @Args('data', { type: () => UpdateUserInput })
+    updateUserBySelfInput: UpdateUserInput,
   ) {
     try {
       const updateUserInput: UpdateUserInput = {
         id: updateUserBySelfInput.id,
         name: updateUserBySelfInput.name,
+        isActivated: updateUserBySelfInput.isActivated,
       };
       const updatedUser = await this.userService.updateUser(updateUserInput);
 

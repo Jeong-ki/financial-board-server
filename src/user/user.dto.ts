@@ -65,6 +65,5 @@ export class UpdateUserInput {
 @InputType()
 export class UpdateUserBySelfInput {
   @Field(() => ID, { nullable: false }) id: string;
-  @Field(() => String, { nullable: true })
-  name?: string;
+  @Field(() => String, { nullable: true }) name?: string;
 }

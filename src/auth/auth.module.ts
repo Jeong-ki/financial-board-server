@@ -7,6 +7,7 @@ import { AuthStrategy, AuthStrategyProps } from './auth.strategy';
 import { AuthResolver } from './auth.resolver';
 import { UserModule } from 'src/user/user.module';
 import { JwtValidationGuard } from './jwt.validation.guard';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -18,17 +19,23 @@ import { JwtValidationGuard } from './jwt.validation.guard';
         AUTH_SESSION_EXPIRED_IN_MINUTE: Joi.number().integer().required(),
       }),
     }),
+    PassportModule.register({
+      property: 'user',
+    }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('AUTH_JWT_SECRET'),
-        signOptions: {
-          expiresIn: parseInt(
-            configService.getOrThrow<string>('AUTH_SESSION_EXPIRED_IN_MINUTE'),
-          ),
-        },
-      }),
       inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const option = {
+          secret: configService.get(`AUTH_JWT_SECRET`),
+          signOptions: {
+            expiresIn: `${configService.get(
+              'AUTH_SESSION_EXPIRED_IN_MINUTE',
+            )}m`,
+          },
+        };
+        return option;
+      },
     }),
     forwardRef(() => UserModule),
   ],
@@ -61,6 +68,6 @@ import { JwtValidationGuard } from './jwt.validation.guard';
       },
     },
   ],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule, JwtValidationGuard],
 })
 export class AuthModule {}

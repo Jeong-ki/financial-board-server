@@ -27,7 +27,8 @@ export class JwtValidationGuard extends AuthGuard('jwt') {
       default:
         if (contextType === 'graphql') {
           const gqlContext = GqlExecutionContext.create(context);
-          request = gqlContext.getContext().req;
+          const { req } = gqlContext.getContext();
+          request = req;
         } else {
           throw new Error(`Unsupported context type: ${contextType}`);
         }

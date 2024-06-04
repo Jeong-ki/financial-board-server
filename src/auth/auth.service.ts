@@ -60,7 +60,6 @@ export class AuthService {
     };
 
     const token = this.jwtService.sign(jwtPayload);
-    console.log(token);
 
     const sessionExpiredInSecond = this.props.sessionExpiredInMinute * 60;
     const expiredDate = moment(new Date())
@@ -288,7 +287,7 @@ export class AuthService {
       );
     }
 
-    return sessionPayload.user;
+    return sessionPayload.userId;
   }
 
   private async setUserSessionPayload(sessionPayload) {
