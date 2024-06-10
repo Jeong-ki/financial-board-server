@@ -19,6 +19,4 @@ export class Board {
   @Field(() => Date, { nullable: false }) time: Date;
   @Field(() => User, { nullable: false }) user: User;
 }
-
-@ArgsType()
-
+ya;

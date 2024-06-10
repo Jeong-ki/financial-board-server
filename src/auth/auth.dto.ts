@@ -21,7 +21,7 @@ registerEnumType(SessionUpdateReasonEnum, {
 
 @ArgsType()
 export class LogInInput {
-  @Field() userId: string;
+  @Field() userId: string;```
   @Field() password: string;
 }
 
