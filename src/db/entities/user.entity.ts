@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { BoardEntity } from './board.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -66,4 +68,7 @@ export class UserEntity {
     default: false,
   })
   isActivated: boolean;
+
+  @OneToMany(() => BoardEntity, (boards) => boards.user)
+  boards: BoardEntity[];
 }

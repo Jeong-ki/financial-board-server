@@ -46,7 +46,6 @@ export class UserResolver {
   ) {
     try {
       const users = await this.userService.findUsers(filter);
-      console.log(users);
       return users;
     } catch (e) {
       this.logger.error(

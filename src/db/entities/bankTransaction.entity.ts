@@ -3,15 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { BankTransactionEntity } from './bankTransaction.entity';
+import { BoardEntity } from './board.entity';
 
-@Entity({ name: 'board' })
-export class BoardEntity {
+@Entity({ name: 'bank-Transaction' })
+export class BankTransactionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -22,22 +20,13 @@ export class BoardEntity {
   updatedAt: Date;
 
   @Column({
-    name: 'title',
+    name: 'type',
     type: 'varchar',
     length: 50,
     unique: true,
     nullable: false,
   })
-  title: string;
-
-  // @Column({
-  //   name: 'type',
-  //   type: 'varchar',
-  //   length: 50,
-  //   unique: true,
-  //   nullable: false,
-  // })
-  // type: string;
+  type: string;
 
   @Column({
     type: 'timestamp',
@@ -47,12 +36,18 @@ export class BoardEntity {
   })
   time: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.boards)
-  user: UserEntity;
+  @Column({ type: 'integer', nullable: false, default: 0 })
+  amount: number;
 
-  @OneToMany(
-    () => BankTransactionEntity,
-    (bankTransactions) => bankTransactions.board,
-  )
-  bankTransactions: BankTransactionEntity[];
+  @Column({
+    name: 'memo',
+    type: 'varchar',
+    length: 50,
+    unique: true,
+    nullable: false,
+  })
+  memo: string;
+
+  @ManyToOne(() => BoardEntity, (board) => board.bankTransactions)
+  board: BoardEntity;
 }
